@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<script>require('electron-connect').client.create()</script>
+<div id="app"></div>
+
+<div class="container">
+    <p>
+        We are using node <script>document.write(process.versions.node)</script>,
+        Chrome <script>document.write(process.versions.chrome)</script>,
+        and Electron <script>document.write(process.versions.electron)</script>.</p>
+</div>
+<!-- 下边这个引用还就只能放在文件尾，放在前边的话找不到app -->
+<script src="js/bundle.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+    var ipc = require('electron').ipcRenderer;
+
+    document.querySelector('#open-file').addEventListener('click', function () {
+        ipc.send('open-file');
+    });
+
+    document.querySelector('#open-dir').addEventListener('click', function () {
+        ipc.send('open-dir');
+    });
+
+    document.querySelector('#save-file').addEventListener('click', function () {
+        ipc.send('save-file');
+    });
+
+    document.querySelector('#msg-box').addEventListener('click', function () {
+        ipc.send('msg-box');
+    });
+
+    document.querySelector('#err-box').addEventListener('click', function () {
+        ipc.send('err-box');
+    });
+
+    document.querySelector('#closeMainWindow').addEventListener('click', function(){
+        ipc.send('closeMainWindow');
+    });
+</script>
+</body>
+</html>

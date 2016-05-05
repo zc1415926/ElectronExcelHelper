@@ -1,0 +1,25 @@
+@font-face {
+    font-family: yahei-consolas;
+    src: url('/app/fonts/YaHei.Consolas.1.12.ttf')
+}
+
+h1, p, a {
+    font-family: yahei-consolas, "微软雅黑", "黑体";
+}
+
+body {
+    padding-top: 70px;
+    -webkit-user-select: none;
+}
+
+#navbar-space {
+    -webkit-app-region: drag;
+}
+
+#navbar-space .container div ul {
+    -webkit-app-region: no-drag;
+}
+
+.btn-open-dialog {
+    margin-right: 10px;
+}
