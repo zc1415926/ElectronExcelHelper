@@ -8,6 +8,12 @@ var Link = require('react-router').Link;
 var NavTab = require('./navTab');
 
 var Nav = React.createClass({
+    componentDidMount: function () {
+        document.querySelector('#closeMainWindow').addEventListener('click', function(){
+            ipc.send('closeMainWindow');
+        });
+    },
+
     render: function () {
         return (
             <nav id="navbar-space" className="navbar navbar-default navbar-fixed-top">
