@@ -4,13 +4,15 @@
 "use strict";
 
 var React = require('react');
+
 var Home = React.createClass({
+
     render: function(){
         return (
             <div className="container">
                 <div className="jumbotron">
-                    <h1>Excel转换</h1>
-                    <p>这里展示了官方文档中列出的5种可以调用的对话框。<a className="btn btn-link" href="http://electron.atom.io/docs/v0.37.2/api/dialog/">详见文档</a></p>
+                    <h1>Excel实用工具</h1>
+                    <p>更高效地利用您的Excel文件，提速您的办公流程。<a id="open-doc" className="btn btn-link" onclick="onOpenDocClicked">详见文档</a></p>
                     <p>
                         <button id="open-file" className="btn btn-primary btn-open-dialog">打开文件</button>
                         <button id="open-dir" className="btn btn-primary btn-open-dialog">打开文件夹</button>

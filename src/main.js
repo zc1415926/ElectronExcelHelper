@@ -7,6 +7,7 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const dialog = require('electron').dialog;
+const shell = electron.shell;
 
 var ipc = require('electron').ipcMain;
 
@@ -120,4 +121,8 @@ ipc.on('closeMainWindow', function(){
             }
         }
     );
+});
+
+ipc.on('open-doc', function(){
+    shell.openExternal('https://github.com/zc1415926/ElectronExcelHelper');
 });

@@ -4,18 +4,20 @@
 $ = jQuery = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Home = require('./components/homePage');
-var Nav = require('./components/partials/nav');
-//var About = require('./components/about/aboutPage');
-//var Header = require('./components/common/header');
-//var ExcelConverter = require('./components/excelConverter/index');
+var Router = require('react-router').Router;
+var Route = require('react-router').Route;
+var hashHistory = require('react-router').hashHistory;
+var IndexRoute = require('react-router').IndexRoute;
 
-var MainRouter = require('./components/router');
+var Home = require('./components/homePage/index');
+
 
 ReactDOM.render((
-    <div>
-        <Nav />
-        <MainRouter />
-    </div>
-
+    <Router history={hashHistory}>
+        <Route path="/" component={require('./app')}>
+            <IndexRoute component={Home}/>
+            <Route path="/home" component={Home}/>
+            <Route path="/renamer" component={require('./components/excelRenamer/index')}/>
+        </Route>
+    </Router>
 ), document.getElementById('app'));

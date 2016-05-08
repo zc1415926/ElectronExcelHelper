@@ -15,6 +15,7 @@ var electronConnect = require('electron-connect').server.create({path: './dist'}
 var config = {
     path: {
         cssSrcDir: 'src/css',
+        cssSrFiles: 'src/css/**/*.css',
         cssDistDir: 'dist/app/css',
         jsSrcDir:  'src/js',
         jsDistDir:  'dist/app/js',
@@ -58,7 +59,7 @@ gulp.task('js', function(){
 });
 
 gulp.task('css', function(){
-    gulp.src(config.path.cssSrcDir + '/**/*.css')
+    gulp.src(config.path.cssSrFiles)
         .pipe(gulp.dest(config.path.cssDistDir));
 });
 
@@ -78,7 +79,7 @@ gulp.task('open', function(){
 
 gulp.task('watch', function(){
     gulp.watch(config.path.jsSrcFiles, ['js']);
-    gulp.watch(config.path.cssSrcDir, ['css']);
+    gulp.watch(config.path.cssSrFiles, ['css']);
 });
 
 gulp.task('watchWithConnect', function(){
@@ -90,3 +91,5 @@ gulp.task('watchWithConnect', function(){
 gulp.task('connect', ['copyFrontLib', 'html', 'js', 'css', 'watchWithConnect'])
 
 gulp.task('default', ['copyFrontLib', 'html', 'js', 'css', 'watch', 'open']);
+
+gulp.task('refresh', ['copyFrontLib', 'html', 'js', 'css', 'watch', 'open']);

@@ -47,6 +47,10 @@
     document.querySelector('#closeMainWindow').addEventListener('click', function(){
         ipc.send('closeMainWindow');
     });
+
+    document.querySelector('#open-doc').addEventListener('click', function(){
+        ipc.send('open-doc');
+    });
 </script>
 </body>
 </html>
