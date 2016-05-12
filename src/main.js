@@ -57,15 +57,43 @@ ipc.on('open-file', function () {
         });
 });
 
-ipc.on('open-dir', function () {
+ipc.on('renamer-open-file', function (event) {
     dialog.showOpenDialog({
-            title: '我是一个打开文件夹对话框',
-            filters: [{name: '电子表格', extensions: ['xls', 'xlsx']}],
-            properties: ['openDirectory', 'multiSelections']
+            title: '我是一个对话框',
+            filters: [{name: '电子表格', extensions: ['xls', 'xlsx']},
+                {name: 'All Files', extensions: ['*']}],
+            properties: ['openFile', 'multiSelections']
         },
 
         function (filePaths) {
-            console.log(filePaths);
+            if(!filePaths){
+                console.log('你没有成功选择一个文件');
+            }
+            else{
+                console.log('你打开了文件：' + filePaths);
+
+                event.sender.send('xlsx-file-path-reply', filePaths);
+                //检测这个文件是否可读
+            }
+        });
+});
+
+ipc.on('renamer-open-dir', function (event) {
+    dialog.showOpenDialog({
+            title: '我是一个打开文件夹对话框',
+            properties: ['openDirectory']
+        },
+
+        function (dirPaths) {
+            if(!dirPaths){
+                console.log('你没有成功选择一个文件夹');
+            }
+            else{
+                console.log('你打开了文件夹：' + dirPaths);
+
+                event.sender.send('dir-path-reply', dirPaths);
+                //检测这个文件夹是否可读
+            }
         }
     );
 });
