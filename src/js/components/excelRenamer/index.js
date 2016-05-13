@@ -8,6 +8,7 @@
 
 var React = require('react');
 var ipc = window.require('electron').ipcRenderer;
+var ExcelStore = require('../../stores/excelStore');
 
 var ExcelRenamer = React.createClass({
 
@@ -31,8 +32,9 @@ var ExcelRenamer = React.createClass({
             ipc.send('renamer-open-dir');
         });
 
-        ipc.on('xlsx-file-path-reply', function(event, xlsxPath){
-                this.getXlsxPath(xlsxPath);
+        ipc.on('renamer-open-file-reply', function(event, sourceData){
+             //   this.getXlsxPath(xlsxPath);
+            console.log(sourceData[0]);
         }.bind(this));
 
         ipc.on('dir-path-reply', function(event, dirPath){

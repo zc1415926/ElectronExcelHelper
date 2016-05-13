@@ -8,10 +8,11 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const dialog = require('electron').dialog;
 const shell = electron.shell;
-
+var xlsx = require('node-xlsx');
 var ipc = require('electron').ipcMain;
-
-const tdRhjxxCoverter = require('./js/utils/tdRhjxxConverter');
+//var remote = require('electron').remote;
+var fs = require('fs');
+//const tdRhjxxCoverter = require('./js/utils/tdRhjxxConverter');
 
 var mainWindow = null;
 
@@ -39,24 +40,6 @@ app.on('ready', function () {
 
 });
 
-ipc.on('open-file', function () {
-    dialog.showOpenDialog({
-            title: '我是一个对话框',
-            filters: [{name: '电子表格', extensions: ['xls', 'xlsx']},
-                {name: 'All Files', extensions: ['*']}],
-            properties: ['openFile', 'multiSelections']
-        },
-
-        function (filePaths) {
-            if(!filePaths){
-                console.log(filePaths);
-            }
-            else{
-                tdRhjxxCoverter.converter(filePaths);
-            }
-        });
-});
-
 ipc.on('renamer-open-file', function (event) {
     dialog.showOpenDialog({
             title: '我是一个对话框',
@@ -71,8 +54,9 @@ ipc.on('renamer-open-file', function (event) {
             }
             else{
                 console.log('你打开了文件：' + filePaths);
-
-                event.sender.send('xlsx-file-path-reply', filePaths);
+                
+                var sourceData = xlsx.parse(fs.readFileSync(filePaths.toString()))[0]['data'];
+                event.sender.send('renamer-open-file-reply', sourceData);
                 //检测这个文件是否可读
             }
         });
@@ -94,17 +78,6 @@ ipc.on('renamer-open-dir', function (event) {
                 event.sender.send('dir-path-reply', dirPaths);
                 //检测这个文件夹是否可读
             }
-        }
-    );
-});
-
-ipc.on('save-file', function () {
-    dialog.showSaveDialog({
-            title: '我是保存文件对话框',
-        },
-
-        function (filePaths) {
-            console.log(filePaths);
         }
     );
 });
