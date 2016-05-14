@@ -13,7 +13,7 @@ var ipc = require('electron').ipcMain;
 //var remote = require('electron').remote;
 var fs = require('fs');
 //const tdRhjxxCoverter = require('./js/utils/tdRhjxxConverter');
-
+var _ = require('lodash');
 var mainWindow = null;
 
 app.on('window-all-closed', function () {
@@ -25,8 +25,8 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
     mainWindow = new BrowserWindow({
         frame: false,
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 768,
         resizable: false
     });
 
@@ -45,17 +45,18 @@ ipc.on('renamer-open-file', function (event) {
             title: '我是一个对话框',
             filters: [{name: '电子表格', extensions: ['xls', 'xlsx']},
                 {name: 'All Files', extensions: ['*']}],
-            properties: ['openFile', 'multiSelections']
+            properties: ['openFile']
         },
 
-        function (filePaths) {
-            if(!filePaths){
+        function (filePath) {
+            if(!filePath){
                 console.log('你没有成功选择一个文件');
             }
             else{
-                console.log('你打开了文件：' + filePaths);
-                
-                var sourceData = xlsx.parse(fs.readFileSync(filePaths.toString()))[0]['data'];
+                console.log('你打开了文件：' + filePath);
+
+                var sourceData = xlsx.parse(fs.readFileSync(filePath.toString()))[0]['data'];
+                sourceData.push(filePath)
                 event.sender.send('renamer-open-file-reply', sourceData);
                 //检测这个文件是否可读
             }
