@@ -22,4 +22,13 @@ body {
 
 .btn-open-dialog {
     margin-right: 10px;
+    width: 200px;
+}
+
+.container .control{
+    margin-bottom: 10px;
+}
+
+.container .secondary {
+    padding-left: 30px;
 }

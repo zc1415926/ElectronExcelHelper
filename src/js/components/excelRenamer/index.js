@@ -85,24 +85,28 @@ var ExcelRenamer = React.createClass({
                     <h1>批量重命名</h1>
                     <p>根据Excel文件中的信息，批量重命名你的文件。<a id="open-doc" className="btn btn-link">详见文档</a></p>
 
-                    <button id="renamer-open-file" className="btn btn-primary btn-open-dialog">打开文件</button>
-                    <XlsxHeaderDropdown headerData={this.state.xlsxSourceData[0]} callbackParent={this.getRenameParams}/>
+                    <div className="control">
+                        <button id="renamer-open-file" className="btn btn-primary btn-open-dialog">打开文件</button>
+                        <code>{this.state.xlsxPath}</code>
+                    </div>
                     
-                    <button id="renamer-open-dir" className="btn btn-primary btn-open-dialog">打开文件夹</button>
+                    <XlsxHeaderDropdown headerData={this.state.xlsxSourceData[0]} callbackParent={this.getRenameParams}/>
 
-                    <button id="renamer-do-rename" className="btn btn-primary btn-open-dialog"
-                            onClick={this.onDoRenameClicked.bind(
-                                    this,
-                                    this.state.xlsxPath,
-                                    this.state.sourceHeader,
-                                    this.state.targetHeader,
-                                    this.state.dirPath,
-                                    this.state.xlsxSourceData)}>开始重命名</button>
+                    <div className="control">
+                        <button id="renamer-open-dir" className="btn btn-primary btn-open-dialog">打开文件夹</button>
+                        <code>{this.state.dirPath}</code>
+                    </div>
 
-                    <h5>{this.state.xlsxPath}</h5>
-                    <h5>{this.state.sourceHeader}</h5>
-                    <h5>{this.state.targetHeader}</h5>
-                    <h5>{this.state.dirPath}</h5>
+                    <div className="control">
+                        <button id="renamer-do-rename" className="btn btn-danger btn-lg btn-open-dialog"
+                                onClick={this.onDoRenameClicked.bind(
+                                        this,
+                                        this.state.xlsxPath,
+                                        this.state.sourceHeader,
+                                        this.state.targetHeader,
+                                        this.state.dirPath,
+                                        this.state.xlsxSourceData)}>开始重命名</button>
+                    </div>
                 </div>
             </div>
         );
