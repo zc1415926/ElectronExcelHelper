@@ -23,7 +23,7 @@ var Nav = React.createClass({
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
-                            <NavTab to="/home">主页</NavTab>
+                            <NavTab to="/" onlyActiveOnIndex={true}>主页</NavTab>
                             <NavTab to="/renamer">文件批量重命名</NavTab>
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
