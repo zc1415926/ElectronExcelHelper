@@ -9,6 +9,7 @@ var ActionTypes = require('../actions/actionTypes');*/
 var assign = require('lodash.assign');
 
 var xlsx = require('node-xlsx');
+var _ = require('lodash');
 
 var CHANGE_EVENT = 'change';
 var _students = [];
@@ -38,6 +39,24 @@ var StudentStore = assign({}, EventEmitter.prototype, {
         //从Excel文件中提取出源数据
        // var sourceData = xlsx.parse(xlsxPath);
         console.log(sourceData);
+    },
+
+    getRenamePairArray: function(sourceHeader, targetHeader, xlsxSourceData){
+
+        //window.console.log(_.isArray(xlsxSourceData[0]));
+        //window.console.log(sourceHeader);
+        //window.console.log(_.indexOf(xlsxSourceData[0], sourceHeader));
+
+        var COL_NUM_LOOKING_FOR = _.indexOf(xlsxSourceData[0], sourceHeader);
+        var COL_NUM_RENAME_TO = _.indexOf(xlsxSourceData[0], targetHeader);
+        var renamePairArray = [];
+
+        for(var i = 1; i < xlsxSourceData.length; i++){
+            renamePairArray.push({'sourceFileName': xlsxSourceData[i][COL_NUM_LOOKING_FOR],
+                                    'targetFileName': xlsxSourceData[i][COL_NUM_RENAME_TO]});
+        }
+        //window.console.log(renamePairArray);
+        return renamePairArray;
     }
 });
 

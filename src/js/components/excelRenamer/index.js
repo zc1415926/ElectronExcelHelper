@@ -8,7 +8,7 @@
 
 var React = require('react');
 var ipc = window.require('electron').ipcRenderer;
-//var ExcelStore = require('../../stores/excelStore');
+var ExcelStore = require('../../stores/excelStore');
 var XlsxHeaderDropdown = require('./partials/xlsxHeaderDropdown');
 var _ = require('lodash');
 
@@ -71,8 +71,10 @@ var ExcelRenamer = React.createClass({
         this.setState(paramObj);
     },
 
-    onDoRenameClicked: function(xlsxPath, sourceHeader, targetHeader, dirPath){
-        ipc.send('renamer-do-rename', xlsxPath, sourceHeader, targetHeader, dirPath);
+    onDoRenameClicked: function(xlsxPath, sourceHeader, targetHeader, dirPath, xlsxSourceData){
+        console.log(ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData));
+        ipc.send('renamer-do-rename', ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData), dirPath);
+
     },
 
     render: function () {
@@ -94,7 +96,8 @@ var ExcelRenamer = React.createClass({
                                     this.state.xlsxPath,
                                     this.state.sourceHeader,
                                     this.state.targetHeader,
-                                    this.state.dirPath)}>开始重命名</button>
+                                    this.state.dirPath,
+                                    this.state.xlsxSourceData)}>开始重命名</button>
 
                     <h5>{this.state.xlsxPath}</h5>
                     <h5>{this.state.sourceHeader}</h5>
