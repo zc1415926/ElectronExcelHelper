@@ -10,6 +10,7 @@ var React = require('react');
 var ipc = window.require('electron').ipcRenderer;
 //var ExcelStore = require('../../stores/excelStore');
 var XlsxHeaderDropdown = require('./partials/xlsxHeaderDropdown');
+var _ = require('lodash');
 
 var ExcelRenamer = React.createClass({
 
@@ -18,6 +19,9 @@ var ExcelRenamer = React.createClass({
             xlsxPath: '',
             dirPath: '',
             xlsxSourceData: '',
+
+            sourceHeader: '',
+            targetHeader: '',
         };
     },
 
@@ -62,6 +66,15 @@ var ExcelRenamer = React.createClass({
         });
     },
 
+    getRenameParams: function(paramObj){
+        //console.log(paramObj);
+        this.setState(paramObj);
+    },
+
+    onDoRenameClicked: function(xlsxPath, sourceHeader, targetHeader, dirPath){
+        ipc.send('renamer-do-rename', xlsxPath, sourceHeader, targetHeader, dirPath);
+    },
+
     render: function () {
         return (
             <div className="container">
@@ -71,10 +84,21 @@ var ExcelRenamer = React.createClass({
                     <p>根据Excel文件中的信息，批量重命名你的文件。<a id="open-doc" className="btn btn-link">详见文档</a></p>
 
                     <button id="renamer-open-file" className="btn btn-primary btn-open-dialog">打开文件</button>
-                    <XlsxHeaderDropdown headerData={this.state.xlsxSourceData[0]}/>
-                    <h5>{this.state.xlsxPath}</h5>
+                    <XlsxHeaderDropdown headerData={this.state.xlsxSourceData[0]} callbackParent={this.getRenameParams}/>
                     
                     <button id="renamer-open-dir" className="btn btn-primary btn-open-dialog">打开文件夹</button>
+
+                    <button id="renamer-do-rename" className="btn btn-primary btn-open-dialog"
+                            onClick={this.onDoRenameClicked.bind(
+                                    this,
+                                    this.state.xlsxPath,
+                                    this.state.sourceHeader,
+                                    this.state.targetHeader,
+                                    this.state.dirPath)}>开始重命名</button>
+
+                    <h5>{this.state.xlsxPath}</h5>
+                    <h5>{this.state.sourceHeader}</h5>
+                    <h5>{this.state.targetHeader}</h5>
                     <h5>{this.state.dirPath}</h5>
                 </div>
             </div>

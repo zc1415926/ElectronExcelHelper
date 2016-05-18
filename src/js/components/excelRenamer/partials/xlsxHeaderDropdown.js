@@ -18,12 +18,18 @@ var XlsxHeaderDropdown = React.createClass({
     },
 
     setSourceHeader: function (header, event) {
+
+        this.props.callbackParent({sourceHeader: header});
+
         this.setState({
             sourceButtonText: '原文件名列: ' + header
         });
     },
 
     setTargetHeader: function (header, event) {
+
+        this.props.callbackParent({targetHeader: header});
+
         this.setState({
             targetButtonText: '目标文件名列: ' + header
         });

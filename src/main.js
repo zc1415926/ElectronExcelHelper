@@ -83,6 +83,10 @@ ipc.on('renamer-open-dir', function (event) {
     );
 });
 
+ipc.on('renamer-do-rename', function(event, xlsxPath, sourceHeader, targetHeader, dirPath){
+
+});
+
 ipc.on('msg-box', function () {
     dialog.showMessageBox({
             type: 'none',
