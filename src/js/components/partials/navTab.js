@@ -10,39 +10,20 @@ var NavTab = React.createClass({
     },
     render: function () {
         var isActive = this.context.router.isActive(this.props.to, this.props.params, this.props.query);
-        //var currentPathName = this.context.router.getCurrentPathname();
-        //window.console.log(this.props);
         var isRootPath = this.context.router.isActive({ pathname: '/'}, true);
-        //window.console.log('isRootPath');
-        //window.console.log(isRootPath);
-var className = '';
-        /*if(isRootPath){
-            if(this.props.to == '/'){
-                window.console.log('root root');
-
-                var className = isActive ? 'active' : '';
-            }else {
-                window.console.log('root other');
-            }
-        }else{
-            var className = isActive ? 'active' : '';
-        }*/
+        var className = '';
 
         if(this.props.to == '/'){
             if(isRootPath){
                 className = 'active';
             }else{
-                //className = isActive ? 'active' : '';
+                className = '';
             }
         }else{
-            if(isRootPath){
-                className = '';
-            }else{
-                //className = isActive ? 'active' : '';
-            }
+
+             className = isActive ? 'active' : '';
+
         }
-        window.console.log('className');
-        window.console.log(this.className);
         return <li className={className}> <Link {...this.props} /></li>;
     }
 });
