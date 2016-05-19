@@ -85,6 +85,8 @@ ipc.on('renamer-open-dir', function (event) {
 });
 
 ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
+    /* 使用shelljs 对文件进行重命名
+
     shelljs.cd(dirPath);
 
     //console.log(renamePairArray);
@@ -103,6 +105,45 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
             shelljs.mv('-f', sFileName, tFileName);
         }
 //TODO:反馈没有找到的文件
+    }*/
+
+    /*
+    * 使用node fs*/
+
+    var fileDirPath = dirPath[0] + '\\';
+    console.log(fileDirPath);
+    var files = fs.readdirSync(fileDirPath);
+
+    //console.log(files);
+    var sPrefixFileName = '';
+    var tPrefixFileName = '';
+   // var sFileFullPath = '';
+   // var tFileFullPath = '';
+
+
+    for(var i = 0; i < renamePairArray.length; i++){
+        sPrefixFileName = renamePairArray[i]['sourceFileName'];
+        tPrefixFileName = renamePairArray[i]['targetFileName'];
+
+        _.forEach(files, function(value, key) {
+            //console.log(value);
+            //console.log(renamePairArray[i]['sourceFileName']);
+            //console.log(value.indexOf(renamePairArray[i]['sourceFileName']));
+
+
+            if(value.indexOf(sPrefixFileName) != -1){
+
+                fs.rename(
+                    fileDirPath + value,
+                    fileDirPath + value.replace(sPrefixFileName, tPrefixFileName),
+                    function(err){
+                        if(err){
+                            console.log(err);
+                        }
+                        //console.log('done!');
+                    });
+            }
+        });
     }
 });
 
