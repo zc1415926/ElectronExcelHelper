@@ -87,36 +87,23 @@ ipc.on('renamer-open-dir', function (event) {
 ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
     shelljs.cd(dirPath);
 
-    console.log(renamePairArray.length);
-    console.log(renamePairArray[0]);
-    console.log(renamePairArray[renamePairArray.length-1]);
+    //console.log(renamePairArray);
+
     for(var i = 0; i < renamePairArray.length; i++){
-        //{ sourceFileName: '张爱雪', targetFileName: 'G500112200401260424' }
-       // console.log(renamePairArray[i]);
+        //console.log(renamePairArray[i]['sourceFileName'] + '*');
         var fileListLength = shelljs.ls(renamePairArray[i]['sourceFileName'] + '*').length;
 
         if(fileListLength > 0){
 
-            console.log(renamePairArray[i]);
-
-
-            //console.log(renamePairArray[0]['sourceFileName']);
             var sFileName = shelljs.ls(renamePairArray[i]['sourceFileName'] + '*')['stdout'];
             sFileName = sFileName.replace('\n', '');
-            //console.log(sFileName);
 
             var tFileName = sFileName.replace(renamePairArray[i]['sourceFileName'], renamePairArray[i]['targetFileName']);
-            //console.log(tFileName);
 
             shelljs.mv('-f', sFileName, tFileName);
-//
         }
-
 //TODO:反馈没有找到的文件
     }
-
-
-
 });
 
 ipc.on('msg-box', function () {
