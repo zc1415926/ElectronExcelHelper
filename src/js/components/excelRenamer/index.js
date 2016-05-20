@@ -72,7 +72,7 @@ var ExcelRenamer = React.createClass({
     },
 
     onDoRenameClicked: function(xlsxPath, sourceHeader, targetHeader, dirPath, xlsxSourceData){
-        console.log(ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData));
+        //console.log(ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData));
         ipc.send('renamer-do-rename', ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData), dirPath);
 
     },
@@ -107,6 +107,16 @@ var ExcelRenamer = React.createClass({
                                         this.state.dirPath,
                                         this.state.xlsxSourceData)}>开始重命名</button>
                     </div>
+                </div>
+                <div className="jumbotron log">
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
+                    <span className="log-line">这里显示日志</span>
                 </div>
             </div>
         );

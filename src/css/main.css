@@ -32,3 +32,15 @@ body {
 .container .secondary {
     padding-left: 30px;
 }
+
+.jumbotron.log{
+    height: 120px;
+    padding: 20px 30px;
+    overflow-y: scroll;
+}
+
+.jumbotron.log .log-line{
+    display: block;
+    font-size: 13px;
+    line-height: 20px;
+}
