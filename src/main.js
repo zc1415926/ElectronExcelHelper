@@ -33,7 +33,7 @@ app.on('ready', function () {
 
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
-    mainWindow.webContents.openDevTools(['bottom']);
+   // mainWindow.webContents.openDevTools(['bottom']);
 
     mainWindow.on('close', function () {
         mainWindow = null;
@@ -119,7 +119,7 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
     var tPrefixFileName = '';
    // var sFileFullPath = '';
    // var tFileFullPath = '';
-
+    var vPrefixFileNmae = '';
 
     for(var i = 0; i < renamePairArray.length; i++){
         sPrefixFileName = renamePairArray[i]['sourceFileName'];
@@ -130,12 +130,12 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
             //console.log(renamePairArray[i]['sourceFileName']);
             //console.log(value.indexOf(renamePairArray[i]['sourceFileName']));
 
+            vPrefixFileNmae = value.split('.')[0];
 
-            if(value.indexOf(sPrefixFileName) != -1){
-
+            if(vPrefixFileNmae == sPrefixFileName){
                 fs.rename(
                     fileDirPath + value,
-                    fileDirPath + value.replace(sPrefixFileName, tPrefixFileName),
+                    fileDirPath + value.replace(vPrefixFileNmae, tPrefixFileName),
                     function(err){
                         if(err){
                             console.log(err);
