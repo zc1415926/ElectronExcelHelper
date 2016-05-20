@@ -114,25 +114,32 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
     console.log(fileDirPath);
     var files = fs.readdirSync(fileDirPath);
 
-    //console.log(files);
+
     var sPrefixFileName = '';
     var tPrefixFileName = '';
    // var sFileFullPath = '';
    // var tFileFullPath = '';
     var vPrefixFileNmae = '';
 
+    var findTheFile = false;
+
     for(var i = 0; i < renamePairArray.length; i++){
+
+        //取出空行的话要就路过本次循环
+        if(_.keys(renamePairArray[i]).length == 0){
+            continue;
+        }
+
+        findTheFile = false;
+
         sPrefixFileName = renamePairArray[i]['sourceFileName'];
         tPrefixFileName = renamePairArray[i]['targetFileName'];
 
         _.forEach(files, function(value, key) {
-            //console.log(value);
-            //console.log(renamePairArray[i]['sourceFileName']);
-            //console.log(value.indexOf(renamePairArray[i]['sourceFileName']));
-
             vPrefixFileNmae = value.split('.')[0];
 
             if(vPrefixFileNmae == sPrefixFileName){
+                findTheFile = true;
                 fs.rename(
                     fileDirPath + value,
                     fileDirPath + value.replace(vPrefixFileNmae, tPrefixFileName),
@@ -142,8 +149,14 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
                         }
                         //console.log('done!');
                     });
+                //如果已经成功匹配成功了xlsx中的原文件名和真实的文件名，就结束当前forEach循环
+                return false;
             }
         });
+
+        if(!findTheFile){
+            console.log('没有找到前缀名为： ' + sPrefixFileName + '的文件 T_T');
+        }
     }
 });
 
