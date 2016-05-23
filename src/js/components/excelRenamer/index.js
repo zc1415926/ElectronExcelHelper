@@ -12,6 +12,8 @@ var ExcelStore = require('../../stores/excelStore');
 var XlsxHeaderDropdown = require('./partials/xlsxHeaderDropdown');
 var _ = require('lodash');
 
+var frontendLogArray = [];
+
 var ExcelRenamer = React.createClass({
 
     getInitialState: function () {
@@ -22,6 +24,7 @@ var ExcelRenamer = React.createClass({
 
             sourceHeader: '',
             targetHeader: '',
+            frontendLog: frontendLogArray
         };
     },
 
@@ -52,6 +55,10 @@ var ExcelRenamer = React.createClass({
         ipc.on('dir-path-reply', function(event, dirPath){
             this.getDirPath(dirPath);
         }.bind(this));
+        
+        ipc.on('renamer-frontend-log', function(event, logArray){
+            this.setFrontendLog(logArray);
+        }.bind(this));
     },
 
     getXlsxPath: function (xlsxPath, event) {
@@ -75,6 +82,21 @@ var ExcelRenamer = React.createClass({
         //console.log(ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData));
         ipc.send('renamer-do-rename', ExcelStore.getRenamePairArray(sourceHeader, targetHeader, xlsxSourceData), dirPath);
 
+    },
+
+    setFrontendLog: function (logArray) {
+        logArray = logArray.reverse();
+        frontendLogArray = logArray.concat(frontendLogArray);
+
+        this.setState({
+            frontendLog: frontendLogArray
+        });
+    },
+
+    createFrontendLogRow: function (logLine) {
+        return (
+            <span className="log-line">{logLine}</span>
+        );
     },
 
     render: function () {
@@ -109,14 +131,7 @@ var ExcelRenamer = React.createClass({
                     </div>
                 </div>
                 <div className="jumbotron log">
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
-                    <span className="log-line">这里显示日志</span>
+                    {this.state.frontendLog.map(this.createFrontendLogRow, this)}
                 </div>
             </div>
         );

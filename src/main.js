@@ -15,6 +15,7 @@ var fs = require('fs');
 //const tdRhjxxCoverter = require('./js/utils/tdRhjxxConverter');
 var _ = require('lodash');
 var shelljs = require('shelljs');
+var moment = require('moment');
 var mainWindow = null;
 
 app.on('window-all-closed', function () {
@@ -85,43 +86,21 @@ ipc.on('renamer-open-dir', function (event) {
 });
 
 ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
-    /* 使用shelljs 对文件进行重命名
 
-    shelljs.cd(dirPath);
-
-    //console.log(renamePairArray);
-
-    for(var i = 0; i < renamePairArray.length; i++){
-        //console.log(renamePairArray[i]['sourceFileName'] + '*');
-        var fileListLength = shelljs.ls(renamePairArray[i]['sourceFileName'] + '*').length;
-
-        if(fileListLength > 0){
-
-            var sFileName = shelljs.ls(renamePairArray[i]['sourceFileName'] + '*')['stdout'];
-            sFileName = sFileName.replace('\n', '');
-
-            var tFileName = sFileName.replace(renamePairArray[i]['sourceFileName'], renamePairArray[i]['targetFileName']);
-
-            shelljs.mv('-f', sFileName, tFileName);
-        }
 //TODO:反馈没有找到的文件
-    }*/
-
     /*
     * 使用node fs*/
-
     var fileDirPath = dirPath[0] + '\\';
-    console.log(fileDirPath);
     var files = fs.readdirSync(fileDirPath);
-
 
     var sPrefixFileName = '';
     var tPrefixFileName = '';
-   // var sFileFullPath = '';
-   // var tFileFullPath = '';
     var vPrefixFileNmae = '';
 
     var findTheFile = false;
+    var notFindFileMessageArray = [];
+
+    event.sender.send('renamer-frontend-log', [getTimeStamp() + '-----重命名操作开始-----']);
 
     for(var i = 0; i < renamePairArray.length; i++){
 
@@ -135,7 +114,7 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
         sPrefixFileName = renamePairArray[i]['sourceFileName'];
         tPrefixFileName = renamePairArray[i]['targetFileName'];
 
-        _.forEach(files, function(value, key) {
+        _.forEach(files, function(value) {
             vPrefixFileNmae = value.split('.')[0];
 
             if(vPrefixFileNmae == sPrefixFileName){
@@ -155,9 +134,13 @@ ipc.on('renamer-do-rename', function(event, renamePairArray, dirPath){
         });
 
         if(!findTheFile){
-            console.log('没有找到前缀名为： ' + sPrefixFileName + '的文件 T_T');
+            notFindFileMessageArray.push(getTimeStamp() +
+                '没有找到前缀名为：“' + sPrefixFileName + '”的文件 T_T');
         }
     }
+
+    notFindFileMessageArray.push(getTimeStamp() + '-----重命名操作完成-----');
+    event.sender.send('renamer-frontend-log', notFindFileMessageArray);
 });
 
 ipc.on('msg-box', function () {
@@ -205,3 +188,7 @@ ipc.on('closeMainWindow', function(){
 ipc.on('open-doc', function(){
     shell.openExternal('https://github.com/zc1415926/ElectronExcelHelper');
 });
+
+function getTimeStamp(){
+    return '[' + moment().format('HH:mm:ss.SSS') + ']　';
+}
