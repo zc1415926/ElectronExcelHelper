@@ -43,4 +43,9 @@ body {
     display: block;
     font-size: 13px;
     line-height: 20px;
+    font-family: "微软雅黑";
+}
+
+code{
+    background: none;
 }
