@@ -18,6 +18,7 @@ ReactDOM.render((
             <IndexRoute component={Home}/>
             <Route path="/home" component={Home}/>
             <Route path="/renamer" component={require('./components/excelRenamer/index')}/>
+            <Route path="/converter" component={require('./components/excelConverter/index')}/>
         </Route>
     </Router>
 ), document.getElementById('app'));

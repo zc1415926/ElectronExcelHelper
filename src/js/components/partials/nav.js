@@ -25,6 +25,7 @@ var Nav = React.createClass({
                         <ul className="nav navbar-nav">
                             <NavTab to="/" onlyActiveOnIndex={true}>主页</NavTab>
                             <NavTab to="/renamer">文件批量重命名</NavTab>
+                            <NavTab to="/converter">课表转换</NavTab>
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
                             <li><a id="closeMainWindow" className="glyphicon glyphicon-remove"></a></li>

@@ -34,7 +34,7 @@ app.on('ready', function () {
 
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
-   // mainWindow.webContents.openDevTools(['bottom']);
+    mainWindow.webContents.openDevTools(['bottom']);
 
     mainWindow.on('close', function () {
         mainWindow = null;
@@ -63,6 +63,166 @@ ipc.on('renamer-open-file', function (event) {
                 //检测这个文件是否可读
             }
         });
+});
+
+ipc.on('converter-open-tdRhjxx', function (event) {
+    dialog.showOpenDialog({
+            title: '打开重庆天地人和街小学总课表',
+            filters: [{name: '电子表格', extensions: ['xls', 'xlsx']},
+                {name: 'All Files', extensions: ['*']}],
+            properties: ['openFile']
+        },
+
+        function (filePath) {
+            if(!filePath){
+                console.log('你没有成功选择一个文件');
+            }
+            else{
+                console.log('你打开了文件：' + filePath);
+
+                //读取Excel文件中的数据
+                var sourceData = xlsx.parse(fs.readFileSync(filePath.toString()))[0]['data'];
+
+                //求Excel表的最大宽度，因为0号行有合并的单元格造成最后几个单元格为空无法计入总数，所以按1号行进行计数
+                var columnsLength = sourceData[1].length;
+                var tempWeek = "";
+                //把星期一行空的单元格填上内容
+                //几个单元格合并并居中后，在读取时被识别为几个单独的单元格，且这几个单元格的首个存放内容，后边几个为空
+                //使用如下代码，在内存中将值为空的单元格填上内容：在星期一行从左到右依次读取单元格，临时变量存储第一个
+                //内容不为空的单元格内容，遇到空的单元格，就把之前读取的内容填入，读取到下个星期时，又会遇到一个内容不
+                //为空的单元格，则临时变量存储新读取的单元格内容，继续填入内容为空的单元格
+                for(var weekI = 0; weekI < columnsLength; weekI++){
+                    if(sourceData[0][weekI] != null){
+                        tempWeek = sourceData[0][weekI];
+                    }
+                    else{
+                        sourceData[0][weekI] = tempWeek;
+                    }
+                }
+
+
+                //从源文件的完整路径中取出所在目录的地址（去掉文件名）
+                var targetPath = '';
+                var tempTargetPath = String(filePath).split('\\');
+                tempTargetPath.pop();
+                tempTargetPath.forEach(function (pathItem) {
+                    targetPath += pathItem+'\\';
+                });
+                //使用Unix时间作为文件名唯一性的保证
+                targetPath += new Date().getTime() + '天地课表-已转换.xlsx';
+
+                var currentTeacher = "";
+                var subject = "";
+                var gradeNum = "";
+                var classNum = "";
+                var gradeText = "";
+                //var weekNum = "";
+                //var orderNum = "";
+                var tempSubjectGradeClass = [];
+                //结果表的表头
+                var exportData = [["年级", "班级", "课程", "教师", "星期", "节次"]];
+
+                for(var rowI = 2; rowI < sourceData.length; rowI++){
+
+                    //得到教师，表格2号行及之后的每行的0号单元格的内容为教师姓名
+                    currentTeacher=sourceData[rowI][0];
+                    //读取上边读取的教师的这一行
+                    for(var colI = 1; colI < sourceData[rowI].length; colI++){
+                        //如果这节课有课（单元格内容不为空）
+                        if(sourceData[rowI][colI]){
+                            //得到课程
+                            tempSubjectGradeClass = String(sourceData[rowI][colI]).split('\n');
+                            subject = tempSubjectGradeClass[0];
+                            //得到年级的阿拉伯数字，转成汉字
+                            tempSubjectGradeClass = String(tempSubjectGradeClass[1]).split('.');
+                            gradeNum = tempSubjectGradeClass[0];
+                            switch (gradeNum){
+                                case '1':
+                                    gradeText = '一年级';
+                                    break;
+                                case '2':
+                                    gradeText = '二年级';
+                                    break;
+                                case '3':
+                                    gradeText = '三年级';
+                                    break;
+                                case '4':
+                                    gradeText = '四年级';
+                                    break;
+                                case '5':
+                                    gradeText = '五年级';
+                                    break;
+                                case '6':
+                                    gradeText = '六年级';
+                                    break;
+                            }
+                            //得到班级
+                            classNum = String(tempSubjectGradeClass[1]).replace('(', '').replace(')', '');
+                            //向结果表中新插入一行
+                            exportData.push([
+                                gradeText,               //年级
+                                classNum,                //班级
+                                subject,                 //科目
+                                currentTeacher,          //教师
+                                sourceData[0][colI],     //星期，本节课所在单元格列数相同的0号行中的内容
+                                sourceData[1][colI]      //节次，本节课所在单元格列数相同的1号行中的内容
+                            ]);
+                        }
+                    }
+                }
+
+                var exportObj = xlsx.build([{name: "worksheet", data: exportData}], {bookType: 'xlsx'});
+                fs.writeFileSync(targetPath, exportObj, 'binary');
+
+                event.sender.send('converter-open-tdRhjxx-reply', targetPath);
+            }
+        });
+});
+
+ipc.on('converter-tdRhjxx-message', function (event, filePath) {
+    dialog.showMessageBox({
+            type: 'none',
+            buttons: ['确定', '打开文件夹', '另存为'],
+            defaultId: 0,
+            title: '转换结果保存对话框',
+            message: '文件已保存为：',
+            detail: filePath,
+            cancelId: 0,
+            noLink: true
+        },
+        function (btnNumClicked) {
+            if(btnNumClicked == 1){
+                shell.showItemInFolder(filePath);
+            }
+            else if(btnNumClicked == 2){
+                event.sender.send('converter-tdRhjxx-message-repaly-save-as', filePath);
+            }
+        }
+    );
+});
+
+ipc.on('converter-tdRhjxx-save-to-dir', function (event, filePath) {
+    dialog.showOpenDialog({
+            title: '转换结果另存为',
+            properties: ['openDirectory']
+        },
+
+        function (dirPaths) {
+            if(!dirPaths){
+                console.log('你没有成功选择一个文件夹');
+            }
+            else{
+                console.log('你打开了文件夹：' + dirPaths);
+
+                //从传入的保存文件的完成路径中提取出文件名
+                var tempTargetFileNameArray = String(filePath).split('\\');
+                var targetFileName = tempTargetFileNameArray[tempTargetFileNameArray.length-1];
+
+                shelljs.cp(filePath, dirPaths+"\\"+targetFileName);
+                event.sender.send('converter-tdRhjxx-save-to-dir-reply', dirPaths+"\\"+targetFileName);
+            }
+        }
+    );
 });
 
 ipc.on('renamer-open-dir', function (event) {
