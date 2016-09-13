@@ -33,8 +33,8 @@ var ExcelConverter = React.createClass({
         return (
             <div className="container">
                 <div className="jumbotron">
-                    <h1>Excel转换</h1>
-                    <p>这里展示了官方文档中列出的5种可以调用的对话框。<a className="btn btn-link" href="http://electron.atom.io/docs/v0.37.2/api/dialog/">详见文档</a></p>
+                    <h1>学校总课表转换</h1>
+                    <p>将学校总课表分解为符合第一范式的表格，方便其他系统导入数据。</p>
                     <p>
                         <button id="converter-open-rhjxx" className="btn btn-primary btn-open-dialog">打开人和街课表并转换</button>
                     </p>
