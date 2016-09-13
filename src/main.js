@@ -122,21 +122,21 @@ ipc.on('converter-open-tdRhjxx', function (event) {
                 //结果表的表头
                 var exportData = [["年级", "班级", "课程", "教师", "星期", "节次"]];
 
-                for(var rowI = 2; rowI < sourceData.length; rowI++){
+                for(var rowI = 3; rowI < sourceData.length; rowI++){
 
                     //得到教师，表格2号行及之后的每行的0号单元格的内容为教师姓名
-                    currentTeacher=sourceData[rowI][0];
+                    currentTeacher=sourceData[rowI][1];
                     //读取上边读取的教师的这一行
-                    for(var colI = 1; colI < sourceData[rowI].length; colI++){
+                    for(var colI = 2; colI < sourceData[rowI].length; colI++){
                         //如果这节课有课（单元格内容不为空）
                         if(sourceData[rowI][colI]){
                             //得到课程
                             tempSubjectGradeClass = String(sourceData[rowI][colI]).split('\n');
                             subject = tempSubjectGradeClass[0];
                             //得到年级的阿拉伯数字，转成汉字
-                            tempSubjectGradeClass = String(tempSubjectGradeClass[1]).split('.');
-                            gradeNum = tempSubjectGradeClass[0];
-                            switch (gradeNum){
+                            tempSubjectGradeClass = String(tempSubjectGradeClass[1]).split('级');
+                            gradeNum = tempSubjectGradeClass[0] + '级';
+                            /*switch (gradeNum){
                                 case '1':
                                     gradeText = '一年级';
                                     break;
@@ -155,17 +155,17 @@ ipc.on('converter-open-tdRhjxx', function (event) {
                                 case '6':
                                     gradeText = '六年级';
                                     break;
-                            }
+                            }*/
                             //得到班级
-                            classNum = String(tempSubjectGradeClass[1]).replace('(', '').replace(')', '');
+                            classNum = String(tempSubjectGradeClass[1]).replace('班', '');
                             //向结果表中新插入一行
                             exportData.push([
-                                gradeText,               //年级
+                                gradeNum,               //年级
                                 classNum,                //班级
                                 subject,                 //科目
                                 currentTeacher,          //教师
                                 sourceData[0][colI],     //星期，本节课所在单元格列数相同的0号行中的内容
-                                sourceData[1][colI]      //节次，本节课所在单元格列数相同的1号行中的内容
+                                sourceData[1][colI]     //节次，本节课所在单元格列数相同的1号行中的内容
                             ]);
                         }
                     }
