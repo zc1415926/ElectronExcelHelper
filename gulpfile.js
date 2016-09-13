@@ -7,10 +7,13 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
-var electron = require('electron-prebuilt');
+var electron = require('electron');
 var gulpUtil = require('gulp-util');
 var childProcess = require('child_process');
 var electronConnect = require('electron-connect').server.create({path: './dist'});
+var packageJson = require('./package.json');
+var shelljs = require('shelljs');
+var fs = require('fs');
 
 var config = {
     path: {
@@ -93,3 +96,15 @@ gulp.task('connect', ['copyFrontLib', 'html', 'js', 'css', 'watchWithConnect'])
 gulp.task('default', ['copyFrontLib', 'html', 'js', 'css', 'watch', 'open']);
 
 gulp.task('refresh', ['copyFrontLib', 'html', 'js', 'css', 'watch', 'open']);
+
+gulp.task('dist', function () {
+    shelljs.mkdir(packageJson.name+'-dist/');
+    shelljs.cp('-rf', 'node_modules/electron/dist', packageJson.name+'-dist/electron');
+    shelljs.cp('-rf', 'dist/', packageJson.name+'-dist/'+packageJson.name);
+    //console.log('./'+packageJson.name+'-dist/');
+
+    var distCommand = '@echo off \r\n'+
+                      'start ./electron/electron.exe ./' + packageJson.name;
+
+    shelljs.echo(distCommand).to(packageJson.name+'-dist/start.bat');
+});
