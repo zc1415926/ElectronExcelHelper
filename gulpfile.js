@@ -42,6 +42,8 @@ gulp.task('copyFrontLib', function(){
         .pipe(gulp.dest('dist/app/js/utils/'));
     gulp.src('package.json')
         .pipe(gulp.dest('dist/'));
+    gulp.src('src/img/*')
+        .pipe(gulp.dest('dist/app/img/'));
 });
 
 gulp.task('html', function(){
